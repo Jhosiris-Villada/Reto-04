@@ -1,0 +1,199 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Sospechoso {
+    string nombre;
+    string cabello;
+    string genero;
+    string anteojos;
+    string belloFacial;
+    string colorBello;
+    Sospechoso* siguiente;
+};
+
+void agregarSospechoso(Sospechoso*& cabeza, string nombre, string cabello, string genero,
+                       string anteojos, string belloFacial, string colorBello) {
+    Sospechoso* nuevo = new Sospechoso{nombre, cabello, genero, anteojos, belloFacial, colorBello, nullptr};
+    if (!cabeza) {
+        cabeza = nuevo;
+    } else {
+        Sospechoso* temp = cabeza;
+        while (temp->siguiente) temp = temp->siguiente;
+        temp->siguiente = nuevo;
+    }
+}
+
+void mostrarLista(Sospechoso* cabeza) {
+    Sospechoso* temp = cabeza;
+    while (temp) {
+        cout << temp->nombre << " | Cabello: " << temp->cabello
+             << " | Genero: " << temp->genero
+             << " | Anteojos: " << temp->anteojos
+             << " | Bello facial: " << temp->belloFacial
+             << (temp->belloFacial != "No tiene" ? (" (" + temp->colorBello + ")") : "")
+             << endl;
+        temp = temp->siguiente;
+    }
+}
+
+void filtrarLista(Sospechoso*& cabeza, int pregunta, int opcion) {
+    Sospechoso* temp = cabeza;
+    Sospechoso* anterior = nullptr;
+
+    while (temp) {
+        bool eliminar = false;
+
+        switch (pregunta) {
+            case 1: // Cabello
+                if ((opcion == 1 && temp->cabello != "Rubio") ||
+                    (opcion == 2 && temp->cabello != "Castaño") ||
+                    (opcion == 3 && temp->cabello != "Negro") ||
+                    (opcion == 4 && temp->cabello != "Pelirrojo") ||
+                    (opcion == 5 && temp->cabello != "Calvo"))
+                    eliminar = true;
+                break;
+
+            case 2: // Género
+                if ((opcion == 1 && temp->genero != "Femenino") ||
+                    (opcion == 2 && temp->genero != "Masculino"))
+                    eliminar = true;
+                break;
+
+            case 3: // Anteojos
+                if ((opcion == 1 && temp->anteojos != "Sí") ||
+                    (opcion == 2 && temp->anteojos != "No"))
+                    eliminar = true;
+                break;
+
+            case 4: // Bello facial
+                if ((opcion == 1 && temp->belloFacial != "No tiene") ||
+                    (opcion == 2 && temp->belloFacial != "Barba") ||
+                    (opcion == 3 && temp->belloFacial != "Bigote"))
+                    eliminar = true;
+                break;
+
+            case 5: // Color del bello facial (solo si tiene)
+                if ((opcion == 1 && temp->colorBello != "Negro") ||
+                    (opcion == 2 && temp->colorBello != "Castaño") ||
+                    (opcion == 3 && temp->colorBello != "Rubio") ||
+                    (opcion == 4 && temp->colorBello != "Pelirrojo"))
+                    eliminar = true;
+                break;
+        }
+
+        if (eliminar) {
+            Sospechoso* borrar = temp;
+            if (!anterior) {
+                cabeza = temp->siguiente;
+                temp = cabeza;
+            } else {
+                anterior->siguiente = temp->siguiente;
+                temp = temp->siguiente;
+            }
+            delete borrar;
+        } else {
+            anterior = temp;
+            temp = temp->siguiente;
+        }
+    }
+}
+
+int contarSospechosos(Sospechoso* cabeza) {
+    int contador = 0;
+    while (cabeza) {
+        contador++;
+        cabeza = cabeza->siguiente;
+    }
+    return contador;
+}
+
+int main() {
+    Sospechoso* lista = nullptr;
+
+    // Agregar los 25 sospechosos
+    agregarSospechoso(lista,"Ana","Rubio","Femenino","No","No tiene","");
+    agregarSospechoso(lista,"Carlos","Castaño","Masculino","Sí","Barba","Negro");
+    agregarSospechoso(lista,"Sofia","Negro","Femenino","No","No tiene","");
+    agregarSospechoso(lista,"Diego","Calvo","Masculino","No","Bigote","Castaño");
+    agregarSospechoso(lista,"Laura","Rubio","Femenino","Sí","No tiene","");
+    agregarSospechoso(lista,"Javier","Pelirrojo","Masculino","Sí","Barba","Pelirrojo");
+    agregarSospechoso(lista,"María","Castaño","Femenino","No","No tiene","");
+    agregarSospechoso(lista,"Pablo","Negro","Masculino","Sí","Barba","Negro");
+    agregarSospechoso(lista,"Marta","Rubio","Femenino","Sí","No tiene","");
+    agregarSospechoso(lista,"Alejandro","Castaño","Masculino","No","Barba","Castaño");
+    agregarSospechoso(lista,"Paula","Negro","Femenino","No","No tiene","");
+    agregarSospechoso(lista,"Daniel","Rubio","Masculino","Sí","No tiene","");
+    agregarSospechoso(lista,"Elena","Pelirrojo","Femenino","No","No tiene","");
+    agregarSospechoso(lista,"Luis","Castaño","Masculino","Sí","Barba","Negro");
+    agregarSospechoso(lista,"Andrea","Negro","Femenino","Sí","No tiene","");
+    agregarSospechoso(lista,"Miguel","Rubio","Masculino","No","Barba","Rubio");
+    agregarSospechoso(lista,"Ana","Castaño","Femenino","No","No tiene","");
+    agregarSospechoso(lista,"Carlos","Negro","Masculino","Sí","No tiene","");
+    agregarSospechoso(lista,"Laura","Rubio","Femenino","No","No tiene","");
+    agregarSospechoso(lista,"Diego","Castaño","Masculino","Sí","No tiene","");
+    agregarSospechoso(lista,"Sofia","Negro","Femenino","Sí","No tiene","");
+    agregarSospechoso(lista,"Javier","Rubio","Masculino","No","Barba","Castaño");
+    agregarSospechoso(lista,"María","Negro","Femenino","No","No tiene","");
+    agregarSospechoso(lista,"Pablo","Rubio","Masculino","Sí","No tiene","");
+    agregarSospechoso(lista,"Marta","Pelirrojo","Femenino","No","No tiene","");
+
+    int preguntas = 0;
+    while (preguntas < 10 && contarSospechosos(lista) > 1) {
+        cout << "\nSospechosos restantes: " << contarSospechosos(lista) << endl;
+        mostrarLista(lista);
+
+        cout << "\nElige una pregunta:\n";
+        cout << "1. Color de cabello\n";
+        cout << "2. Género\n";
+        cout << "3. Usa anteojos\n";
+        cout << "4. Tiene bello facial\n";
+        cout << "5. Color del bello facial\n";
+        cout << "Opcion: ";
+        int p; cin >> p;
+
+        int op;
+        switch (p) {
+            case 1:
+                cout << "1. Rubio\n2. Castaño\n3. Negro\n4. Pelirrojo\n5. Calvo\n";
+                cin >> op;
+                break;
+            case 2:
+                cout << "1. Femenino\n2. Masculino\n";
+                cin >> op;
+                break;
+            case 3:
+                cout << "1. Sí\n2. No\n";
+                cin >> op;
+                break;
+            case 4:
+                cout << "1. No tiene\n2. Barba\n3. Bigote\n";
+                cin >> op;
+                break;
+            case 5:
+                cout << "1. Negro\n2. Castaño\n3. Rubio\n4. Pelirrojo\n";
+                cin >> op;
+                break;
+            default:
+                cout << "Opción inválida.\n";
+                continue;
+        }
+
+        filtrarLista(lista, p, op);
+        preguntas++;
+    }
+
+    cout << "\n--- Resultado ---\n";
+    if (contarSospechosos(lista) == 1) {
+        cout << "El agente doble es:\n";
+        mostrarLista(lista);
+        double puntaje = 1.0 - (preguntas * 0.1);
+        if (puntaje < 0.5) puntaje = 0.5;
+        cout << "Puntaje final: " << puntaje << endl;
+    } else {
+        cout << "No se pudo identificar al agente doble.\n";
+        cout << "Puntaje final: 0.5\n";
+    }
+
+    return 0;
+}
